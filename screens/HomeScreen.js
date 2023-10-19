@@ -8,6 +8,7 @@ import { View } from "react-native";
 import { set } from "lodash";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SongItem from "../components/SongItem";
+
 const HomeScreen = () => {
   const accessToken = "f04dfd05dc14418dac62ddb90900e1d4";
   const query = "";
@@ -16,7 +17,7 @@ const HomeScreen = () => {
     const access_token = await AsyncStorage.getItem("token");
     console.log(access_token);
     const response = await fetch(
-      `https://api.spotify.com/v1/recommendations?limit=1&seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA&min_popularity=0&max_popularity=0&target_popularity=0`,
+      `https://api.spotify.com/v1/me/tracks?offset=0&limit=50`,
       {
         method: "GET",
         headers: {
@@ -29,12 +30,16 @@ const HomeScreen = () => {
       throw new Error("Fail to Fetch");
     }
     const data = await response.json();
-    setEenzaamsLied(data.tracks);
+    setEenzaamsLied(data.items);
   }
   useEffect(() => {
     getHetEenzaamsteNummers();
   }, []);
   console.log(eenzaamsLied);
+
+  const playTrack = async ()=>{
+    
+  }
 
   return (
     <LinearGradient colors={["#614385", "#516395"]} style={{ flex: 1 }}>
@@ -46,6 +51,7 @@ const HomeScreen = () => {
         </View>
 
         <FlatList
+          showsVerticalScrollIndicator={false}
           data={eenzaamsLied}
           renderItem={({ item }) => <SongItem item={item} />}
         />
