@@ -8,6 +8,7 @@ import {
   makeRedirectUri,
   useAuthRequest,
 } from "expo-auth-session";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Endpoint
 const discovery = {
@@ -42,6 +43,7 @@ const LoginScreen = () => {
   React.useEffect(() => {
     if (response?.type === "success") {
       const { access_token } = response.params;
+      AsyncStorage.setItem("token", access_token);
       console.log("accessToken", access_token);
       navigation.navigate("Main");
     }
