@@ -20,6 +20,9 @@ const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [eenzaamsLied, setEenzaamsLied] = useState([]);
   const [currentSound, setCurrentSound] = useState(null);
+  const [progress, setProgress] = useState(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [totalDuration, setTotalDuration] = useState(0);
   async function getHetEenzaamsteNummers() {
     const access_token = await AsyncStorage.getItem("token");
     console.log(access_token);
@@ -67,14 +70,37 @@ const HomeScreen = () => {
         {
           shouldPlay: true,
           isLooping: false,
-        }
+        },
+        onPlaybackStatusUpdate
       );
-      console.log(sound);
+      onPlaybackStatusUpdate(status);
+      //console.log(status);
       setCurrentSound(sound);
       await sound.playAsync();
     } catch (error) {
       console.log(error.message);
     }
+  };
+  const onPlaybackStatusUpdate = async (status) => {
+    console.log(status);
+    if (status.isLoaded && status.isPlaying) {
+      const progress = status.positionMillis / status.durationMillis;
+      //console.log("progresss", progress);
+      setProgress(progress);
+      setCurrentTime(status.positionMillis);
+      setTotalDuration(status.durationMillis);
+    }
+
+    if (status.didJustFinish === true) {
+      setCurrentSound(null);
+      playNextTrack();
+    }
+  };
+  const circleSize = 12;
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60000);
+    const seconds = Math.floor((time % 60000) / 1000);
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
   return (
     <>
@@ -226,7 +252,35 @@ const HomeScreen = () => {
               </View>
             </View>
             <View style={{ marginTop: 10 }}>
-              <Text>Progress Bar</Text>
+              <View
+                style={{
+                  width: "100%",
+                  marginTop: 10,
+                  height: 3,
+                  backgroundColor: "gray",
+                  borderRadius: 5,
+                }}
+              >
+                <View
+                  style={[styles.progressbar, { width: `${progress * 100}%` }]}
+                />
+                <View
+                  style={[
+                    {
+                      position: "absolute",
+                      top: -5,
+                      width: circleSize,
+                      height: circleSize,
+                      borderRadius: circleSize / 2,
+                      backgroundColor: "white",
+                    },
+                    {
+                      left: `${progress * 100}%`,
+                      marginLeft: -circleSize / 2,
+                    },
+                  ]}
+                />
+              </View>
               <View
                 style={{
                   marginTop: 12,
@@ -235,8 +289,12 @@ const HomeScreen = () => {
                   justifyContent: "space-between",
                 }}
               >
-                <Text style={{ color: "white", fontSize: 15 }}>0:00</Text>
-                <Text style={{ color: "white", fontSize: 15 }}>0:30</Text>
+                <Text style={{ color: "white", fontSize: 15 }}>
+                  {formatTime(currentTime)}
+                </Text>
+                <Text style={{ color: "white", fontSize: 15 }}>
+                  {formatTime(totalDuration)}
+                </Text>
               </View>
             </View>
             <View
@@ -255,6 +313,18 @@ const HomeScreen = () => {
               </Pressable>
               <Pressable>
                 <AntDesign name="pausecircle" size={60} color="white" />
+                {/* <Pressable
+                  style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: 30,
+                    backgroundColor: "white",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Entypo name="controller-play" size={26} color="black" />
+                </Pressable> */}
               </Pressable>
               <Pressable>
                 <Ionicons name="play-skip-forward" size={30} color="white" />
@@ -272,4 +342,9 @@ const HomeScreen = () => {
 
 export default HomeScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  progressbar: {
+    height: "100%",
+    backgroundColor: "white",
+  },
+});
