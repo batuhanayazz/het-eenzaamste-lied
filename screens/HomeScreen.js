@@ -60,6 +60,9 @@ const HomeScreen = () => {
     //console.log(nextTrack);
     const preview_url = nextTrack?.track?.preview_url;
     try {
+      if (currentSound) {
+        await currentSound.stopAsync();
+      }
       await Audio.setAudioModeAsync({
         playsInSilentModeIOS: true,
         staysActiveInBackground: false,
@@ -99,8 +102,6 @@ const HomeScreen = () => {
       playNextTrack();
     }
   };
-
-
 
   const circleSize = 12;
   const formatTime = (time) => {
@@ -180,7 +181,13 @@ const HomeScreen = () => {
           <FlatList
             showsVerticalScrollIndicator={false}
             data={eenzaamsLied}
-            renderItem={({ item }) => <SongItem item={item} onPress={} />}
+            renderItem={({ item }) => (
+              <SongItem
+                item={item}
+                onPress={play}
+                isPlaying={item === currentTrack}
+              />
+            )}
           />
         </ScrollView>
       </LinearGradient>
