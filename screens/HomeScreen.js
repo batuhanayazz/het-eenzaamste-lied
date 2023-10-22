@@ -4,20 +4,22 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Pressable } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { TextInput } from "react-native";
+import { Feather, FontAwesome } from "@expo/vector-icons";
 import { View } from "react-native";
-import { set } from "lodash";
+import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SongItem from "../components/SongItem";
 import { useNavigation } from "@react-navigation/native";
 import { Player } from "../PlayerContext";
 import { BottomModal, ModalContent } from "react-native-modals";
+import { Audio } from "expo-av";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const { currentTrack, setCurrentTrack } = useContext(Player);
   const [modalVisible, setModalVisible] = useState(false);
   const [eenzaamsLied, setEenzaamsLied] = useState([]);
+  const [currentSound, setCurrentSound] = useState(null);
   async function getHetEenzaamsteNummers() {
     const access_token = await AsyncStorage.getItem("token");
     console.log(access_token);
@@ -49,8 +51,31 @@ const HomeScreen = () => {
     await play(eenzaamsLied[0]);
   };
 
-  const play = async () => {};
-  console.log(currentTrack);
+  const play = async (nextTrack) => {
+    console.log(nextTrack);
+    const preview_url = nextTrack?.track?.preview_url;
+    try {
+      await Audio.setAudioModeAsync({
+        playsInSilentModeIOS: true,
+        staysActiveInBackground: false,
+        shouldDuckAndroid: false,
+      });
+      const { sound, status } = await Audio.Sound.createAsync(
+        {
+          uri: preview_url,
+        },
+        {
+          shouldPlay: true,
+          isLooping: false,
+        }
+      );
+      console.log(sound);
+      setCurrentSound(sound);
+      await sound.playAsync();
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <>
       <LinearGradient colors={["#614385", "#516395"]} style={{ flex: 1 }}>
@@ -155,7 +180,12 @@ const HomeScreen = () => {
                 justifyContent: "space-between",
               }}
             >
-              <AntDesign name="down" size={24} color="white" />
+              <AntDesign
+                onPress={() => setModalVisible(!modalVisible)}
+                name="down"
+                size={24}
+                color="white"
+              />
               <Text
                 style={{ fontSize: 15, fontWeight: "bold", color: "white" }}
               >
@@ -164,7 +194,7 @@ const HomeScreen = () => {
 
               <Entypo name="dots-three-vertical" size={24} color="white" />
             </Pressable>
-            <View style={{ height: 70 }} />
+            <View style={{ height: 30 }} />
             <View style={{ padding: 10 }} />
             <Image
               style={{
@@ -174,7 +204,9 @@ const HomeScreen = () => {
               }}
               source={{ uri: currentTrack?.track?.album?.images[0].url }}
             />
-            <View>
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
               <View style={{ marginTop: 10 }}>
                 <Text
                   style={{ fontSize: 18, fontWeight: "bold", color: "white" }}
@@ -192,6 +224,44 @@ const HomeScreen = () => {
                   {currentTrack?.track?.artists[0].name}
                 </Text>
               </View>
+            </View>
+            <View style={{ marginTop: 10 }}>
+              <Text>Progress Bar</Text>
+              <View
+                style={{
+                  marginTop: 12,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text style={{ color: "white", fontSize: 15 }}>0:00</Text>
+                <Text style={{ color: "white", fontSize: 15 }}>0:30</Text>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginTop: 17,
+              }}
+            >
+              <Pressable>
+                <FontAwesome name="arrows" size={30} color="#03C03C" />
+              </Pressable>
+              <Pressable>
+                <Ionicons name="play-skip-back" size={30} color="white" />
+              </Pressable>
+              <Pressable>
+                <AntDesign name="pausecircle" size={60} color="white" />
+              </Pressable>
+              <Pressable>
+                <Ionicons name="play-skip-forward" size={30} color="white" />
+              </Pressable>
+              <Pressable>
+                <Feather name="repeat" size={30} color="#03C03C" />
+              </Pressable>
             </View>
           </View>
         </ModalContent>
