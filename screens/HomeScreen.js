@@ -1,5 +1,5 @@
 import { StyleSheet, Text, ScrollView, FlatList, Image } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Pressable } from "react-native";
 import { Entypo } from "@expo/vector-icons";
@@ -19,10 +19,12 @@ const HomeScreen = () => {
   const { currentTrack, setCurrentTrack } = useContext(Player);
   const [modalVisible, setModalVisible] = useState(false);
   const [eenzaamsLied, setEenzaamsLied] = useState([]);
+  const value = useRef(0);
   const [currentSound, setCurrentSound] = useState(null);
   const [progress, setProgress] = useState(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
   async function getHetEenzaamsteNummers() {
     const access_token = await AsyncStorage.getItem("token");
     console.log(access_token);
@@ -76,6 +78,7 @@ const HomeScreen = () => {
       onPlaybackStatusUpdate(status);
       //console.log(status);
       setCurrentSound(sound);
+      setIsPlaying(status.isLoaded);
       await sound.playAsync();
     } catch (error) {
       console.log(error.message);
@@ -102,6 +105,31 @@ const HomeScreen = () => {
     const seconds = Math.floor((time % 60000) / 1000);
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
+  const handlePlayPause = async () => {
+    if (currentSound) {
+      if (isPlaying) {
+        await currentSound.pauseAsync();
+      } else {
+        await currentSound.playAsync();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+  const playNextTrack = async () => {
+    if (currentSound) {
+      await currentSound.stopAsync();
+      setCurrentSound(null);
+    }
+    value.current += 1;
+    if (value.current < eenzaamsLied.length) {
+      const nextTrack = eenzaamsLied[value.current];
+      setCurrentTrack(nextTrack);
+      await play(nextTrack);
+    } else {
+      console.log("end of playlist");
+    }
+  };
+
   return (
     <>
       <LinearGradient colors={["#614385", "#516395"]} style={{ flex: 1 }}>
@@ -311,22 +339,26 @@ const HomeScreen = () => {
               <Pressable>
                 <Ionicons name="play-skip-back" size={30} color="white" />
               </Pressable>
-              <Pressable>
-                <AntDesign name="pausecircle" size={60} color="white" />
-                {/* <Pressable
-                  style={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: 30,
-                    backgroundColor: "white",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Entypo name="controller-play" size={26} color="black" />
-                </Pressable> */}
+              <Pressable onPress={handlePlayPause}>
+                {isPlaying ? (
+                  <AntDesign name="pausecircle" size={60} color="white" />
+                ) : (
+                  <Pressable
+                    onPress={handlePlayPause}
+                    style={{
+                      width: 60,
+                      height: 60,
+                      borderRadius: 30,
+                      backgroundColor: "white",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Entypo name="controller-play" size={26} color="black" />
+                  </Pressable>
+                )}
               </Pressable>
-              <Pressable>
+              <Pressable onPress={playNextTrack}>
                 <Ionicons name="play-skip-forward" size={30} color="white" />
               </Pressable>
               <Pressable>

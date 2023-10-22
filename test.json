@@ -1,0 +1,117 @@
+{
+  "seeds": [
+    {
+      "afterFilteringSize": 0,
+      "afterRelinkingSize": 0,
+      "href": "https://api.spotify.com/v1/artists/4NHQUGzhtTLFvgF5SZesLK",
+      "id": "4NHQUGzhtTLFvgF5SZesLK",
+      "initialPoolSize": 500,
+      "type": "ARTIST"
+    },
+    {
+      "afterFilteringSize": 10,
+      "afterRelinkingSize": 10,
+      "href": "https://api.spotify.com/v1/tracks/0c6xIDDpzE81m2q797ordA",
+      "id": "0c6xIDDpzE81m2q797ordA",
+      "initialPoolSize": 500,
+      "type": "TRACK"
+    },
+    {
+      "afterFilteringSize": 82,
+      "afterRelinkingSize": 82,
+      "href": null,
+      "id": "classical",
+      "initialPoolSize": 517,
+      "type": "GENRE"
+    },
+    {
+      "afterFilteringSize": 54,
+      "afterRelinkingSize": 54,
+      "href": null,
+      "id": "country",
+      "initialPoolSize": 999,
+      "type": "GENRE"
+    }
+  ],
+  "tracks": [
+    {
+      "album": {
+        "album_type": "ALBUM",
+        "total_tracks": 9,
+        "available_markets": [],
+        "external_urls": {
+          "spotify": "https://open.spotify.com/album/2AmMsz5BUrmrekKgMbImZG"
+        },
+        "href": "https://api.spotify.com/v1/albums/2AmMsz5BUrmrekKgMbImZG",
+        "id": "2AmMsz5BUrmrekKgMbImZG",
+        "images": [
+          {
+            "url": "https://i.scdn.co/image/113048461b1c9fafc2609733eef37e49883353ba",
+            "height": 640,
+            "width": 640
+          },
+          {
+            "url": "https://i.scdn.co/image/6a49e5871cf1340daa31557a9a1e1f26e11c1f63",
+            "height": 300,
+            "width": 300
+          },
+          {
+            "url": "https://i.scdn.co/image/80fbad417405ab4099eb1915391861e4b90e50f9",
+            "height": 64,
+            "width": 64
+          }
+        ],
+        "name": "...and they have escaped the weight of darkness",
+        "release_date": "2010-05-07",
+        "release_date_precision": "day",
+        "type": "album",
+        "uri": "spotify:album:2AmMsz5BUrmrekKgMbImZG",
+        "artists": [
+          {
+            "external_urls": {
+              "spotify": "https://open.spotify.com/artist/7E3BRXV9ZbCt5lQTCXMTia"
+            },
+            "href": "https://api.spotify.com/v1/artists/7E3BRXV9ZbCt5lQTCXMTia",
+            "id": "7E3BRXV9ZbCt5lQTCXMTia",
+            "name": "Ólafur Arnalds",
+            "type": "artist",
+            "uri": "spotify:artist:7E3BRXV9ZbCt5lQTCXMTia"
+          }
+        ]
+      },
+      "artists": [
+        {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/artist/7E3BRXV9ZbCt5lQTCXMTia"
+          },
+          "href": "https://api.spotify.com/v1/artists/7E3BRXV9ZbCt5lQTCXMTia",
+          "id": "7E3BRXV9ZbCt5lQTCXMTia",
+          "name": "Ólafur Arnalds",
+          "type": "artist",
+          "uri": "spotify:artist:7E3BRXV9ZbCt5lQTCXMTia"
+        }
+      ],
+      "available_markets": [],
+      "disc_number": 1,
+      "duration_ms": 274355,
+      "explicit": false,
+      "external_ids": {
+        "isrc": "GBWZD1002202"
+      },
+      "external_urls": {
+        "spotify": "https://open.spotify.com/track/4zo9nVH8uBk5DnUa92ogWn"
+      },
+      "href": "https://api.spotify.com/v1/tracks/4zo9nVH8uBk5DnUa92ogWn",
+      "id": "4zo9nVH8uBk5DnUa92ogWn",
+      "name": "Þú ert jörðin",
+      "popularity": 0,
+      "preview_url": null,
+      "track_number": 2,
+      "type": "track",
+      "uri": "spotify:track:4zo9nVH8uBk5DnUa92ogWn",
+      "is_local": false
+    }
+  ]
+}
+
+//https://api.spotify.com/v1/recommendations?limit=10&seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA&min_popularity=0&max_popularity=0&target_popularity=0
