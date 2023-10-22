@@ -47,7 +47,7 @@ const HomeScreen = () => {
   useEffect(() => {
     getHetEenzaamsteNummers();
   }, []);
-  console.log(eenzaamsLied);
+  //console.log(eenzaamsLied);
 
   const playTrack = async () => {
     if (eenzaamsLied.length > 0) {
@@ -57,7 +57,7 @@ const HomeScreen = () => {
   };
 
   const play = async (nextTrack) => {
-    console.log(nextTrack);
+    //console.log(nextTrack);
     const preview_url = nextTrack?.track?.preview_url;
     try {
       await Audio.setAudioModeAsync({
@@ -85,7 +85,7 @@ const HomeScreen = () => {
     }
   };
   const onPlaybackStatusUpdate = async (status) => {
-    console.log(status);
+    //console.log(status);
     if (status.isLoaded && status.isPlaying) {
       const progress = status.positionMillis / status.durationMillis;
       //console.log("progresss", progress);
@@ -99,6 +99,9 @@ const HomeScreen = () => {
       playNextTrack();
     }
   };
+
+
+
   const circleSize = 12;
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60000);
@@ -129,7 +132,21 @@ const HomeScreen = () => {
       console.log("end of playlist");
     }
   };
+  const playPreviousTrack = async () => {
+    if (currentSound) {
+      await currentSound.stopAsync();
+      setCurrentSound(null);
+    }
+    value.current -= 1;
+    if (value.current < eenzaamsLied.length) {
+      const nextTrack = eenzaamsLied[value.current];
+      setCurrentTrack(nextTrack);
 
+      await play(nextTrack);
+    } else {
+      console.log("end of playlist");
+    }
+  };
   return (
     <>
       <LinearGradient colors={["#614385", "#516395"]} style={{ flex: 1 }}>
@@ -163,7 +180,7 @@ const HomeScreen = () => {
           <FlatList
             showsVerticalScrollIndicator={false}
             data={eenzaamsLied}
-            renderItem={({ item }) => <SongItem item={item} />}
+            renderItem={({ item }) => <SongItem item={item} onPress={} />}
           />
         </ScrollView>
       </LinearGradient>
@@ -337,7 +354,12 @@ const HomeScreen = () => {
                 <FontAwesome name="arrows" size={30} color="#03C03C" />
               </Pressable>
               <Pressable>
-                <Ionicons name="play-skip-back" size={30} color="white" />
+                <Ionicons
+                  onPress={playPreviousTrack}
+                  name="play-skip-back"
+                  size={30}
+                  color="white"
+                />
               </Pressable>
               <Pressable onPress={handlePlayPause}>
                 {isPlaying ? (
